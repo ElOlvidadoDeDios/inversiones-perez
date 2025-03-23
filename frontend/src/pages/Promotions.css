@@ -1,0 +1,73 @@
+.promotions-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.promotions-page h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.subscribe-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.subscribe-form h2 {
+    margin-top: 0;
+    color: #555;
+}
+
+.subscribe-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+}
+
+.subscribe-form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.subscribe-form button:hover {
+    background-color: #218838;
+}
+
+.promotions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.promotion-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.promotion-card h3 {
+    margin-top: 0;
+}
+
+.promotion-card img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+}

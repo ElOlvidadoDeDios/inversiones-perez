@@ -1,0 +1,101 @@
+.home-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.promotions-section,
+.products-section {
+    margin-bottom: 40px;
+}
+
+.promotions-list,
+.products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.promotion-card,
+.product-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.promotion-card:hover,
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.promotion-card img,
+.product-card img,
+.promotion-card video,
+.product-card video {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+    object-fit: cover; /* Asegura que la imagen o video cubra el espacio sin distorsionarse */
+}
+
+.promotion-card video,
+.product-card video {
+    background: #000; /* Fondo negro para videos */
+}
+
+.promotion-card h3,
+.product-card h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.promotion-card p,
+.product-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+    flex-grow: 1; /* Asegura que el texto ocupe el espacio disponible */
+}
+
+h1, h2 {
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* Estilos para los controles de video */
+video::-webkit-media-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-mute-button {
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 8px;
+}
+
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display {
+    color: #fff;
+    font-size: 0.8rem;
+}

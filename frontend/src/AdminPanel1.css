@@ -1,0 +1,140 @@
+/* Estilos generales */
+.admin-panel {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-panel h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.admin-panel h2 {
+    color: #555;
+    margin-top: 20px;
+}
+
+/* Formularios */
+.admin-panel form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-panel input,
+.admin-panel textarea,
+.admin-panel select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.admin-panel button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-panel button:hover {
+    background-color: #0056b3;
+}
+
+/* Listas */
+.admin-panel ul {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.admin-panel li {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.admin-panel li h3 {
+    margin-top: 0;
+}
+
+.admin-panel img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-panel ul {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .admin-panel form {
+        flex-direction: column;
+    }
+
+    .admin-panel input,
+    .admin-panel textarea {
+        width: 100%;
+    }
+}
