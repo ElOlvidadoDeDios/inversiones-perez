@@ -1,4 +1,4 @@
-const { uploadFile, deleteFile } = require('../services/googleDrive'); // Asegúrate de tener deleteFile en tu servicio
+const { uploadFile, deleteFile } = require('../services/cloudinary'); // Asegúrate de tener deleteFile en tu servicio
 const db = require('../db');
 
 // Crear un producto
@@ -21,12 +21,12 @@ const createProduct = async (req, res) => {
 
     // Validar tipo de archivo
     if (image && !image.mimetype.startsWith('image/')) {
-        return res.status(400).json({ message: 'Solo se permiten archivos de imagen.' });
+        return res.status(400).json({ message: '    .' });
     }
 
     try {
-        // Subir archivo a Google Drive
-        const imageUrl = image ? await uploadFile(image) : null;
+        // Subir archivo a Google Drive, pero esta vez a cloudeinary
+        const imageUrl = await uploadFile(image);
 
         // Insertar producto en la base de datos
         await db.promise().query(

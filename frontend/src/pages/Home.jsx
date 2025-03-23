@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import Notification from '../components/Notification';
-import './Home.css';
+import './styles/Home.css';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
@@ -33,12 +33,6 @@ const Home = () => {
         return url && url.match(/\.(mp4|webm|ogg)$/i);
     };
 
-    // Función para decodificar la URL
-    const decodeImageUrl = (url) => {
-        if (!url) return url; // Si la URL es null o undefined, la devuelve tal cual
-        return url.replace(/&amp;/g, '&'); // Reemplaza &amp; por &
-    };
-
     return (
         <div className="home-page">
             <h1>Bienvenido a Inversiones Pérez</h1>
@@ -67,11 +61,12 @@ const Home = () => {
                                 {promotion.image_url && (
                                     isVideo(promotion.image_url) ? (
                                         <video controls width="100%">
-                                            <source src={decodeImageUrl(promotion.image_url)} type="video/mp4" />
+                                            {/*<source src={decodeImageUrl(promotion.image_url)} type="video/mp4" />*/}
+                                            <source src={promotion.image_url} type="video/mp4" />
                                             Tu navegador no soporta el elemento de video.
                                         </video>
                                     ) : (
-                                        <img src={decodeImageUrl(promotion.image_url)} alt={promotion.title} />
+                                        <img src={promotion.image_url} alt={promotion.title} />
                                     )
                                 )}
                             </motion.div>
@@ -102,12 +97,13 @@ const Home = () => {
                                 <p>Precio: S/{product.price}</p>
                                 {product.image_url && (
                                     isVideo(product.image_url) ? (
-                                        <video controls width="100%">
-                                            <source src={decodeImageUrl(product.image_url)} type="video/mp4" />
+                                        <video controls width="50%">
+                                            {/*<source src={decodeImageUrl(product.image_url)} type="video/mp4" />*/}
+                                            <source src={product.image_url} type="video/mp4" />
                                             Tu navegador no soporta el elemento de video.
                                         </video>
                                     ) : (
-                                        <img src={decodeImageUrl(product.image_url)} alt={product.title} />
+                                        <img src={product.image_url} alt={product.title} />
                                     )
                                 )}
                             </motion.div>

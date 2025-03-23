@@ -3,19 +3,14 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Notification from '../components/Notification';
 import { motion, AnimatePresence } from 'framer-motion';
-import './Promotions.css';
+import './styles/Promotions.css';
 
 const Promotions = () => {
     const { user } = useAuth();
     const [promotions, setPromotions] = useState([]);
     const [email, setEmail] = useState(user?.email || '');
     const [notification, setNotification] = useState({ message: '', type: '' });
-
-    // Función para decodificar la URL
-    const decodeImageUrl = (url) => {
-        if (!url) return url; // Si la URL es null o undefined, la devuelve tal cual
-        return url.replace(/&amp;/g, '&'); // Reemplaza &amp; por &
-    };
+    const [selectedImage, setSelectedImage] = useState(null); // Estado para la imagen seleccionada
 
     // Obtener promociones al cargar el componente
     useEffect(() => {
@@ -57,6 +52,20 @@ const Promotions = () => {
         }
     };
 
+    const isVideo = (url) => {
+        return url && url.match(/\.(mp4|webm|ogg)$/i);
+    };
+
+    // Función para abrir la imagen en un modal
+    const openImageModal = (imageUrl) => {
+        setSelectedImage(imageUrl);
+    };
+
+    // Función para cerrar el modal
+    const closeImageModal = () => {
+        setSelectedImage(null);
+    };
+
     return (
         <div className="promotions-page">
             <h1>Promociones</h1>
@@ -95,12 +104,33 @@ const Promotions = () => {
                             <h3>{promotion.title}</h3>
                             <p>{promotion.description}</p>
                             {promotion.image_url && (
-                                <img src={decodeImageUrl(promotion.image_url)} alt={promotion.title} />
+                                isVideo(promotion.image_url) ? (
+                                    <video controls width="100%">
+                                        {/*<source src={decodeImageUrl(promotion.image_url)} type="video/mp4" />*/}
+                                        <source src={promotion.image_url} type="video/mp4" />
+                                        Tu navegador no soporta el elemento de video.
+                                    </video>
+                                ) : (
+                                <img
+                                    src={promotion.image_url}
+                                    alt={promotion.title}
+                                    onClick={() => openImageModal(promotion.image_url)} // Abre el modal al hacer clic
+                                />)
                             )}
                         </motion.div>
                     ))}
                 </AnimatePresence>
             </div>
+
+            {/* Modal para la imagen ampliada */}
+            {selectedImage && (
+                <div className="modal-overlay" onClick={closeImageModal}>
+                    <div className="modal-content">
+                        <img src={selectedImage} alt="Imagen ampliada" />
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

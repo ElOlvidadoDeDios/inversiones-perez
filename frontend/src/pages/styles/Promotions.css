@@ -1,0 +1,127 @@
+.promotions-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.promotions-page h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.subscribe-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.subscribe-form h2 {
+    margin-top: 0;
+    color: #555;
+    font-size: 1.5rem;
+}
+
+.subscribe-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.subscribe-form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.subscribe-form button:hover {
+    background-color: #218838;
+}
+
+.promotions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.promotion-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    text-align: center; /* Centrar contenido */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px); /* Efecto de levitación */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra al pasar el cursor */
+}
+
+.promotion-card h3 {
+    margin-top: 0;
+    font-size: 1.5rem; /* Título más grande */
+    color: #333;
+}
+
+.promotion-card p {
+    font-size: 1rem; /* Texto más grande */
+    color: #666;
+    margin: 10px 0; /* Espaciado entre elementos */
+}
+
+.promotion-card img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+    transition: transform 0.3s ease; /* Transición suave para el zoom */
+}
+
+.promotion-card img:hover {
+    transform: scale(1.5); /* Zoom al 200% */
+}
+
+.promotion-card video {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+    object-fit: cover; /* Asegura que la imagen o video cubra el espacio sin distorsionarse */
+}
+
+.promotion-card video {
+    background: #000; /* Fondo negro para videos */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+.modal-content img {
+    max-width: 90vw; /* Ancho máximo del 90% del viewport */
+    max-height: 90vh; /* Altura máxima del 90% del viewport */
+    border-radius: 10px;
+}

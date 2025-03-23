@@ -5,7 +5,7 @@ import Modal from '../../src/components/Modal';
 import SearchBar from '../../src/components/SearchBar';
 import Notification from '../../src/components/Notification';
 import { motion, AnimatePresence } from 'framer-motion';
-import '../../src/AdminPanel.css';
+import './styles/AdminPanel1.css';
 
 const AdminPanel = () => {
     const { user } = useAuth();
@@ -37,7 +37,7 @@ const AdminPanel = () => {
     });
     const [notification, setNotification] = useState({ message: '', type: '' });
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 4;
 
     const [changePasswordData, setChangePasswordData] = useState({
         currentPassword: '',
@@ -639,37 +639,6 @@ const AdminPanel = () => {
                 />
                 <button onClick={handleSendPromotionEmail}>Enviar Correo</button>
             </div>
-
-            {/*{currentUsers.map((user) => (
-                <div key={user.id}>
-                    <h3>{user.name}</h3>
-                    <p>{user.email}</p>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={user.can_delete_users}
-                            onChange={(e) => handleUpdatePermissions(user.id, { ...user, can_delete_users: e.target.checked })}
-                        />
-                        Puede eliminar usuarios
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={user.can_manage_promotions}
-                            onChange={(e) => handleUpdatePermissions(user.id, { ...user, can_manage_promotions: e.target.checked })}
-                        />
-                        Puede gestionar promociones
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={user.can_manage_products}
-                            onChange={(e) => handleUpdatePermissions(user.id, { ...user, can_manage_products: e.target.checked })}
-                        />
-                        Puede gestionar productos
-                    </label>
-                </div>
-            ))}*/}
 
             <div className="change-password-form">
                 <h2>Cambiar Contraseña</h2>

@@ -3,19 +3,20 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Notification from '../components/Notification';
 import { motion, AnimatePresence } from 'framer-motion';
-import './Products.css';
+import './styles/Products.css';
 
 const Products = () => {
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
     const [email, setEmail] = useState(user?.email || '');
     const [notification, setNotification] = useState({ message: '', type: '' });
+    const [selectedImage, setSelectedImage] = useState(null); // Estado para la imagen seleccionada
 
     // Función para decodificar la URL
-    const decodeImageUrl = (url) => {
+    /*const decodeImageUrl = (url) => {
         if (!url) return url; // Si la URL es null o undefined, la devuelve tal cual
         return url.replace(/&amp;/g, '&'); // Reemplaza &amp; por &
-    };
+    };*/
 
     // Obtener productos al cargar el componente
     useEffect(() => {
@@ -57,6 +58,16 @@ const Products = () => {
         }
     };
 
+    // Función para abrir la imagen en un modal
+    const openImageModal = (imageUrl) => {
+        setSelectedImage(imageUrl);
+    };
+
+    // Función para cerrar el modal
+    const closeImageModal = () => {
+        setSelectedImage(null);
+    };
+
     return (
         <div className="products-page">
             <h1>Productos</h1>
@@ -96,12 +107,26 @@ const Products = () => {
                             <p>{product.description}</p>
                             <p>Precio: S/{product.price}</p>
                             {product.image_url && (
-                                <img src={decodeImageUrl(product.image_url)} alt={product.title} />
+                                <img 
+                                src={product.image_url}
+                                    alt={product.title}
+                                    onClick={() => openImageModal(product.image_url)} // Abre el modal al hacer clic
+                                     />
                             )}
                         </motion.div>
                     ))}
                 </AnimatePresence>
             </div>
+
+            {/* Modal para la imagen ampliada */}
+            {selectedImage && (
+                <div className="modal-overlay" onClick={closeImageModal}>
+                    <div className="modal-content">
+                        <img src={selectedImage} alt="Imagen ampliada" />
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

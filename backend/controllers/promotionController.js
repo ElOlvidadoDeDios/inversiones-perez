@@ -1,4 +1,4 @@
-const { uploadFile } = require('../services/googleDrive');
+const { uploadFile } = require('../services/cloudinary');
 const db = require('../db');
 
 // Crear una promoción
