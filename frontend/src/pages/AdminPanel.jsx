@@ -36,8 +36,25 @@ const AdminPanel = () => {
         text: '',
     });
     const [notification, setNotification] = useState({ message: '', type: '' });
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPageProducts, setCurrentPageProducts] = useState(1);
+    const [currentPagePromotions, setCurrentPagePromotions] = useState(1);
+    const [currentPageUsers, setCurrentPageUsers] = useState(1);
     const itemsPerPage = 4;
+
+    // Productos
+    const indexOfLastProduct = currentPageProducts * itemsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    // Promociones
+    const indexOfLastPromotion = currentPagePromotions * itemsPerPage;
+    const indexOfFirstPromotion = indexOfLastPromotion - itemsPerPage;
+    const currentPromotions = filteredPromotions.slice(indexOfFirstPromotion, indexOfLastPromotion);
+
+    // Usuarios
+    const indexOfLastUser = currentPageUsers * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
     const [changePasswordData, setChangePasswordData] = useState({
         currentPassword: '',
@@ -399,17 +416,16 @@ const AdminPanel = () => {
     };
 
     // Paginación
-    const indexOfLastItem = currentPage * itemsPerPage;
+    /*const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
     const currentPromotions = filteredPromotions.slice(indexOfFirstItem, indexOfLastItem);
     const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);*/
 
-    const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
+    const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
         const pageNumbers = [];
-    
         for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
             pageNumbers.push(i);
         }
@@ -419,7 +435,15 @@ const AdminPanel = () => {
                 <ul style={{ display: 'flex', listStyle: 'none', padding: 0 }}>
                     {pageNumbers.map((number) => (
                         <li key={number} style={{ margin: '0 5px' }}>
-                            <button onClick={() => paginate(number)}>{number}</button>
+                            <button 
+                                onClick={() => paginate(number)}
+                                style={{
+                                    fontWeight: number === currentPage ? 'bold' : 'normal',
+                                    color: number === currentPage ? '#007bff' : '#333',
+                                }}
+                            >
+                                {number}
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -491,7 +515,8 @@ const AdminPanel = () => {
                 <Pagination
                     itemsPerPage={itemsPerPage}
                     totalItems={filteredUsers.length}
-                    paginate={paginate}
+                    paginate={setCurrentPageUsers}
+                    currentPage={currentPageUsers}
                 />
             </div>
             )}
@@ -555,7 +580,8 @@ const AdminPanel = () => {
                 <Pagination
                     itemsPerPage={itemsPerPage}
                     totalItems={filteredProducts.length}
-                    paginate={paginate}
+                    paginate={setCurrentPageProducts}
+                    currentPage={currentPageProducts}
                 />
             </div>
             )}
@@ -612,7 +638,8 @@ const AdminPanel = () => {
                 <Pagination
                     itemsPerPage={itemsPerPage}
                     totalItems={filteredPromotions.length}
-                    paginate={paginate}
+                    paginate={setCurrentPagePromotions}
+                    currentPage={currentPagePromotions}
                 />
             </div>
             )}
