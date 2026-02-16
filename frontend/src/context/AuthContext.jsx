@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+// 1. CAMBIO: Importamos nuestra instancia 'api' en lugar de 'axios' directo
+import api from '../api/axios'; 
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
@@ -11,32 +12,35 @@ export const AuthProvider = ({ children }) => {
     // Verificar si el usuario está autenticado al cargar la aplicación
     useEffect(() => {
         const token = localStorage.getItem('token');
+        
         if (token) {
-            axios.get('http://localhost:5000/api/user', {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => setUser(response.data))
-            .catch((error) => {
-                if (error.response?.status === 401) { // Token expirado o inválido
-                    localStorage.removeItem('token');
-                    setUser(null);
-                    navigate('/login'); // Redirigir al login
-                }
-            });
+            // 2. CAMBIO: Usamos 'api.get' y solo la ruta relativa
+            // Ya no pasamos { headers: ... } porque el interceptor lo hace por nosotros
+            api.get('/api/user')
+                .then((response) => {
+                    setUser(response.data);
+                })
+                .catch((error) => {
+                    console.error("Error de autenticación:", error);
+                    // Si el token no es válido o expiró (Error 401)
+                    if (error.response?.status === 401) {
+                        localStorage.removeItem('token');
+                        setUser(null);
+                        navigate('/login');
+                    }
+                });
         }
-    }, []);
+    }, []); // El array vacío asegura que esto solo corra una vez al montar
+
+    // ... (el resto de funciones login y logout siguen abajo)
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { email, password });
+            // También actualizamos aquí para usar 'api'
+            const response = await api.post('/api/login', { email, password });
             
-            // Guardar el token en localStorage
             localStorage.setItem('token', response.data.token);
-            
-            // Guardar los datos del usuario en el estado
             setUser(response.data.user);
-            
-            // Redirigir a la página principal
             navigate('/');
         } catch (error) {
             console.error(error);

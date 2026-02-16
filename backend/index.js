@@ -7,6 +7,8 @@ const productController = require('./controllers/productController');
 const promotionController = require('./controllers/promotionController');
 const authController = require('./controllers/authController');
 const { verifyPermissions, verifyAdmin } = require('./controllers/authController'); // Importar verifyPermissions y verifyAdmin
+const { sendPromotionEmail } = require('./services/mailer');
+const costeadorController = require('./controllers/costeadorController');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -117,6 +119,7 @@ app.put('/api/users/:id/update-permissions', verifyAdmin, async (req, res) => {
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 5000;
+app.post('/api/calcular-precio', upload.single('pdfFile'), costeadorController.calcularPrecio);
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
