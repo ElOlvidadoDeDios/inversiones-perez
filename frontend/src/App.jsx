@@ -8,11 +8,13 @@ import Login from './pages/Login';
 import AdminPanel from './pages/AdminPanel';
 import Costeador from './pages/Costeador';
 import ProtectedRoute from './components/ProtectedRoute';
+import WhatsAppButton from './components/WhatsAppButton';
 
 function App() {
     return (
         <>
             <Navbar />
+            <WhatsAppButton />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/promotions" element={<Promotions />} />

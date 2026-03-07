@@ -3,12 +3,10 @@ const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 const path = require('path');
 const fs = require('fs');
 
-// Configuración del worker de PDF.js para Node (evita errores de promesas)
-// En entornos Node puro a veces es mejor deshabilitar el worker externo o apuntar al archivo correcto
+// Configuración del worker de PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/pdf.worker.js');
 
 const calcularPrecio = async (req, res) => {
-    // Verificar si hay archivo
     if (!req.file) {
         return res.status(400).json({ message: 'No se subió ningún archivo PDF.' });
     }
@@ -16,23 +14,22 @@ const calcularPrecio = async (req, res) => {
     const { tamano, color, impresion, reduccion } = req.body;
     const filePath = req.file.path;
 
+    // Factores que vienen del Frontend
+    const factorTamano = parseFloat(tamano) || 0.20; 
+    const factorColor = parseFloat(color) || 1;      
+    const factorImpresion = parseFloat(impresion) || 1;
+    const factorReduccion = parseFloat(reduccion) || 1;
+
     try {
-        // Cargar el documento PDF
         const data = new Uint8Array(fs.readFileSync(filePath));
-        const pdf = await pdfjsLib.getDocument({
-            data: data,
-            // standardFontDataUrl: ... (generalmente no es estricto para análisis de píxeles en backend)
-        }).promise;
+        const pdf = await pdfjsLib.getDocument({ data: data }).promise;
 
         const numPages = pdf.numPages;
         let totalCost = 0;
 
-        // Iterar por cada página
         for (let i = 1; i <= numPages; i++) {
             const page = await pdf.getPage(i);
             const viewport = page.getViewport({ scale: 1 });
-
-            // Crear Canvas virtual
             const canvas = createCanvas(viewport.width, viewport.height);
             const context = canvas.getContext('2d');
 
@@ -43,7 +40,6 @@ const calcularPrecio = async (req, res) => {
 
             await page.render(renderContext).promise;
 
-            // Análisis de píxeles
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const pixels = imageData.data;
             let totalPixels = pixels.length / 4;
@@ -59,9 +55,7 @@ const calcularPrecio = async (req, res) => {
                 const r = pixels[j];
                 const g = pixels[j + 1];
                 const b = pixels[j + 2];
-                // alpha = pixels[j + 3] (no lo usamos por ahora)
-
-                // Fórmula de luminancia
+                
                 const lumin = 0.299 * r + 0.587 * g + 0.114 * b;
 
                 if (lumin > whiteThreshold) {
@@ -79,7 +73,7 @@ const calcularPrecio = async (req, res) => {
 
             let pageCost = 0;
 
-            // --- Lógica de Precios (Transplantada de tu server.js) ---
+            // --- LÓGICA DE DETECCIÓN DE TINTA (TU LÓGICA ORIGINAL) ---
             if (colorPercentage < 10) {
                 pageCost = 0.25;
             } else if (colorPercentage > 8 && whitePercentage > 70) {
@@ -143,26 +137,31 @@ const calcularPrecio = async (req, res) => {
             totalCost += pageCost;
         }
 
-        // Limpiar archivo temporal
         fs.unlinkSync(filePath);
 
-        // Factores multiplicadores
-        const factorTamano = parseFloat(tamano) || 1;
-        const factorColor = parseFloat(color) || 1;
-        const factorImpresion = parseFloat(impresion) || 1;
-        const factorReduccion = parseFloat(reduccion) || 1;
+        // --- CÁLCULO FINAL ---
+        
+        const factorNormalizacion = 4;
+        const ajusteColor = factorColor > 1 ? 0.833333 : 1;
 
-        const precioFinal = totalCost * factorTamano * factorColor * factorImpresion * factorReduccion;
+        let precioFinal = totalCost * factorNormalizacion * factorTamano * factorColor * ajusteColor * factorImpresion * factorReduccion;
+
+        // --- NUEVA LÓGICA: Redondear SIEMPRE HACIA ARRIBA al decimal (Ceiling) ---
+        // 0.21 -> 0.30
+        // 0.25 -> 0.30 (si usas ceil puro) o 0.30 (si ya es exacto se queda)
+        // Math.ceil(0.21 * 10) = Math.ceil(2.1) = 3 / 10 = 0.3
+        
+        // Pequeño truco para evitar problemas de coma flotante (ej: 0.2000000001 no debería subir a 0.30 si era 0.20)
+        precioFinal = Math.ceil((precioFinal - 0.001) * 10) / 10;
 
         res.json({ 
-            precio: precioFinal.toFixed(2), 
+            precio: precioFinal.toFixed(2), // 0.30
             numPaginas: numPages,
             message: 'Cálculo completado' 
         });
 
     } catch (error) {
         console.error('Error en el costeador:', error);
-        // Intentar borrar archivo si falla
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         res.status(500).json({ message: 'Error al procesar el PDF' });
     }
