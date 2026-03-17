@@ -9,7 +9,7 @@ const BotManager = () => {
 
     useEffect(() => {
         // Conectar al servidor de WebSockets en el backend
-        ws.current = new WebSocket('ws://localhost:5000');
+        ws.current = new WebSocket('ws://localhost:4000');
 
         ws.current.onmessage = (event) => {
             const data = JSON.parse(event.data);

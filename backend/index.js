@@ -8,6 +8,7 @@ const qrcode = require('qrcode');     // Añadido para el Bot
 const fs = require('fs');             // Añadido para el Bot
 const path = require('path');         // Añadido para el Bot
 
+dotenv.config();
 // Controladores de Inversiones Pérez
 const db = require('./db');
 const productController = require('./controllers/productController');
@@ -20,7 +21,7 @@ const costeadorController = require('./controllers/costeadorController');
 // Clase de Sesión del Bot
 const BotSession = require('./botSession');
 
-dotenv.config();
+
 
 const app = express();
 const server = http.createServer(app); // Envolvemos Express en un servidor HTTP
@@ -206,7 +207,7 @@ process.on('SIGINT', () => {
 // ==========================================
 // INICIAR SERVIDOR UNIFICADO
 // ==========================================
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
     console.log(`🚀 Servidor y WebSockets corriendo en http://localhost:${PORT}`);
 });

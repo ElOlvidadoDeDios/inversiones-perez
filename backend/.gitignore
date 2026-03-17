@@ -3,3 +3,5 @@ node_modules
 upload
 credentials.json
 logs
+.wwebjs_auth/
+.wwebjs_cache/
