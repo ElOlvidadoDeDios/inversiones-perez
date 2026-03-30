@@ -1,75 +1,57 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './Navbar.css'; // Importamos el CSS premium
 
 const Navbar = () => {
     const { user, logout } = useAuth();
 
     return (
-        <nav style={styles.navbar}>
-            <div style={styles.logo}>
-                <Link to="/" style={styles.link}>Inversiones Pérez</Link>
-            </div>
-            <div style={styles.links}>
-                <Link to="/" style={styles.link}>Inicio</Link>
-                <Link to="/products" style={styles.link}>Productos</Link>
-                <Link to="/promotions" style={styles.link}>Promociones</Link>
-                {user ? (
-                    <>
-                        {(user.role === 'user' ||user.role === 'admin' || user.role === 'worker') && (
-                            <Link to="/costeador" style={styles.link}>Costeador</Link>
-                        )}
-                        {(user.role === 'admin' || user.role === 'worker') && (
-                            <Link to="/admin" style={styles.link}>Administración</Link>
-                        )}
-                        <span style={styles.userInfo}>
-                            {user.name} ({user.role})
-                        </span>
-                        <button onClick={logout} style={styles.button}>Cerrar Sesión</button>
-                    </>
-                ) : (
-                    <Link to="/login" style={styles.link}>Iniciar Sesión</Link>
-                )}
+        <nav className="premium-navbar">
+            <div className="navbar-container">
+                
+                {/* 1. SECCIÓN LOGO */}
+                <div className="nav-logo">
+                    <Link to="/" className="logo-link">
+                        Inversiones <strong>Pérez</strong>
+                    </Link>
+                </div>
+
+                {/* 2. SECCIÓN ENLACES CENTRALES */}
+                <div className="nav-links">
+                    <Link to="/" className="nav-item">Inicio</Link>
+                    <Link to="/products" className="nav-item">Productos</Link>
+                    <Link to="/promotions" className="nav-item">Promociones</Link>
+                    
+                    {user && (user.role === 'user' || user.role === 'admin' || user.role === 'worker') && (
+                        <Link to="/costeador" className="nav-item">Costeador</Link>
+                    )}
+                    
+                    {user && (user.role === 'admin' || user.role === 'worker') && (
+                        <Link to="/admin" className="nav-item admin-link">Administración</Link>
+                    )}
+                </div>
+
+                {/* 3. SECCIÓN ACCIONES (Derecha) */}
+                <div className="nav-actions">
+                    {user ? (
+                        <>
+                            <div className="user-info">
+                                <span>Hola, {user.name.split(' ')[0]}</span>
+                                <span className="user-role-badge">
+                                    {user.role === 'admin' ? 'Admin' : user.role === 'worker' ? 'Trabajador' : 'Cliente'}
+                                </span>
+                            </div>
+                            <button onClick={logout} className="btn-logout">Salir</button>
+                        </>
+                    ) : (
+                        <Link to="/login" className="btn-login">Iniciar Sesión</Link>
+                    )}
+                </div>
+
             </div>
         </nav>
     );
-};
-
-const styles = {
-    navbar: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 20px',
-        backgroundColor: '#333',
-        color: '#fff',
-    },
-    logo: {
-        fontSize: '24px',
-        fontWeight: 'bold',
-    },
-    links: {
-        display: 'flex',
-        gap: '20px',
-        alignItems: 'center',
-    },
-    link: {
-        color: '#fff',
-        textDecoration: 'none',
-        fontSize: '16px',
-    },
-    button: {
-        backgroundColor: '#ff4d4d',
-        color: '#fff',
-        border: 'none',
-        padding: '8px 16px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-    },
-    userInfo: {
-        margin: '0 10px',
-        fontSize: '16px',
-    },
 };
 
 export default Navbar;
