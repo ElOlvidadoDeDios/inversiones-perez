@@ -22,7 +22,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/products');
+                const response = await axios.get('http://localhost:4000/api/products');
                 setProducts(response.data);
             } catch (error) {
                 console.error(error);
@@ -46,7 +46,7 @@ const Products = () => {
         }
     
         try {
-            await axios.post('http://localhost:5000/api/subscribe', { email }, {
+            await axios.post('http://localhost:4000/api/subscribe', { email }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axios'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import Notification from '../components/Notification';
 import './styles/Home.css';
@@ -12,8 +12,8 @@ const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const productsResponse = await axios.get('http://localhost:5000/api/products');
-                const promotionsResponse = await axios.get('http://localhost:5000/api/promotions');
+                const productsResponse = await axios.get('/api/products');
+                const promotionsResponse = await axios.get('/api/promotions');
                 setProducts(productsResponse.data);
                 setPromotions(promotionsResponse.data);
             } catch (error) {

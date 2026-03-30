@@ -1,54 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Notification from '../components/Notification';
-// Nota: No necesitamos importar pdfjs-dist aquí para contar hojas si el backend ya lo hace,
-// pero si quieres mostrar el conteo ANTES de enviar, mantenemos la lógica básica.
+import './styles/Costeador.css';
 
 const Costeador = () => {
+    // Estados del formulario
     const [file, setFile] = useState(null);
     const [numHojas, setNumHojas] = useState('');
     const [precio, setPrecio] = useState('');
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ message: '', type: '' });
 
-    // Estados del formulario
+    // Estados con los valores exactos de tu backend
     const [tamano, setTamano] = useState('0.20'); // A4 por defecto
     const [color, setColor] = useState('1');      // B/N por defecto
     const [impresion, setImpresion] = useState('1'); // Una cara
-    const [reduccion, setReduccion] = useState('1'); // Sin reducción (valor 1 para evitar NaN en backend si no se envía)
+    const [reduccion, setReduccion] = useState('1'); // Sin reducción
 
     // Estados de UI (deshabilitar campos)
     const [disableReduccion, setDisableReduccion] = useState(false);
     const [disableImpresion, setDisableImpresion] = useState(false);
 
-    // Efecto para manejar las reglas de negocio (deshabilitar campos)
+    // Efecto para manejar las reglas de negocio
     useEffect(() => {
-        // Regla: A3, A2, A1 deshabilitan reducción e impresión (fuerzan 1 cara)
         if (['0.80', '2.50', '3.00'].includes(tamano)) {
             setDisableReduccion(true);
-            setReduccion('1'); // Reset reducción
+            setReduccion('1');
             setDisableImpresion(true);
-            setImpresion('1'); // Reset a una cara
+            setImpresion('1');
         } else {
             setDisableReduccion(false);
             setDisableImpresion(false);
         }
 
-        // Regla: Folleto deshabilita reducción
-        if (impresion === '0.25') { // 0.25 es el valor de Folleto en tu HTML
+        if (impresion === '0.25') { 
             setDisableReduccion(true);
             setReduccion('1');
         } else if (!['0.80', '2.50', '3.00'].includes(tamano)) {
-             // Solo reactivar si el tamaño lo permite
             setDisableReduccion(false);
         }
     }, [tamano, impresion]);
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
+
+        // 1. Guardamos el archivo en el estado visual
         setFile(selectedFile);
-        setPrecio(''); // Limpiar precio anterior
-        setNumHojas('Calculando en servidor...'); // Feedback
+        setPrecio(''); // Limpiamos el precio viejo
+        setNumHojas('Calculando...'); // Mostramos el estado de carga
+
+        // 2. Preparamos el archivo para enviarlo en segundo plano
+        const formData = new FormData();
+        formData.append('pdfFile', selectedFile);
+        
+        // Enviamos los valores por defecto para que el backend no falle
+        formData.append('tamano', tamano);
+        formData.append('color', color);
+        formData.append('impresion', impresion);
+        formData.append('reduccion', reduccion);
+
+        // 3. Hacemos la petición automática al backend
+        try {
+            const response = await api.post('http://localhost:4000/calcular-precio', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            // 4. Actualizamos el número de hojas detectadas inmediatamente
+            setNumHojas(response.data.numPaginas);
+
+            /* OPCIONAL: Si quieres que el precio también aparezca automáticamente 
+               sin presionar el botón de "Calcular Presupuesto", descomenta la línea de abajo: */
+            // setPrecio(response.data.precio);
+
+        } catch (error) {
+            console.error("Error al contar las hojas:", error);
+            setNumHojas('Error al leer el PDF');
+        }
     };
 
     const handleCalcular = async () => {
@@ -66,12 +94,14 @@ const Costeador = () => {
         formData.append('reduccion', reduccion);
 
         try {
-            const response = await api.post('/api/calcular-precio', formData, {
+            // ---> AQUÍ ESTÁ LA SOLUCIÓN MÁGICA <---
+            // Forzamos la petición al puerto 4000 de Node.js
+            const response = await api.post('http://localhost:4000/calcular-precio', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             
             setPrecio(response.data.precio);
-            setNumHojas(response.data.numPaginas); // El backend nos confirma las páginas reales
+            setNumHojas(response.data.numPaginas);
             setNotification({ message: 'Cálculo exitoso', type: 'success' });
         } catch (error) {
             console.error(error);
@@ -81,114 +111,112 @@ const Costeador = () => {
         }
     };
 
-    // Estilos inline básicos para replicar Bootstrap layout visualmente
-    const containerStyle = { maxWidth: '800px', margin: '20px auto', padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#fff' };
-    const sectionStyle = { marginBottom: '20px' };
-    const labelStyle = { display: 'block', marginBottom: '8px', fontWeight: 'bold' };
-    const inputStyle = { width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' };
-    const radioGroupStyle = { display: 'flex', flexDirection: 'column', gap: '5px' };
-
     return (
-        <div style={containerStyle}>
-            <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Cálculo de Precio de Impresión</h1>
+        <div className="costeador-wrapper">
             <Notification message={notification.message} type={notification.type} />
+            
+            <div className="costeador-container">
+                {/* COLUMNA IZQUIERDA: Formulario */}
+                <div className="form-card">
+                    <h2>📄 Cotizador Inteligente</h2>
+                    <p style={{color: '#6b7280', marginBottom: '25px'}}>Calcula tu presupuesto al instante. Sin esperas, sin sorpresas.</p>
 
-            {/* Archivo */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Subir archivo PDF:</label>
-                <input type="file" accept=".pdf" onChange={handleFileChange} style={inputStyle} />
-            </div>
+                    <div className="step-group">
+                        <label className="step-title">1. Sube tu documento (PDF)</label>
+                        <input 
+                            type="file" 
+                            accept=".pdf" 
+                            onChange={handleFileChange} 
+                            className="input-file"
+                        />
+                        {numHojas && <p className="hojas-detectadas">Hojas detectadas: <strong>{numHojas}</strong></p>}
+                    </div>
 
-            {/* Resultado Hojas (Solo lectura, viene del backend) */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Número de hojas (detectado):</label>
-                <input type="text" value={numHojas} readOnly style={{ ...inputStyle, backgroundColor: '#e9ecef' }} />
-            </div>
+                    <div className="step-group">
+                        <label className="step-title">2. Tamaño de papel</label>
+                        <div className="options-grid">
+                            <div className={`option-box ${tamano === '0.10' ? 'selected' : ''}`} onClick={() => setTamano('0.10')}>A5</div>
+                            <div className={`option-box ${tamano === '0.20' ? 'selected' : ''}`} onClick={() => setTamano('0.20')}>A4</div>
+                            <div className={`option-box ${tamano === '0.80' ? 'selected' : ''}`} onClick={() => setTamano('0.80')}>A3</div>
+                            <div className={`option-box ${tamano === '2.50' ? 'selected' : ''}`} onClick={() => setTamano('2.50')}>A2</div>
+                            <div className={`option-box ${tamano === '3.00' ? 'selected' : ''}`} onClick={() => setTamano('3.00')}>A1</div>
+                        </div>
+                    </div>
 
-            {/* Tamaño */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Tamaño de papel:</label>
-                <div style={radioGroupStyle}>
-                    <label><input type="radio" name="tamano" value="0.10" checked={tamano === '0.10'} onChange={(e) => setTamano(e.target.value)} /> A5 (0.10)</label>
-                    <label><input type="radio" name="tamano" value="0.20" checked={tamano === '0.20'} onChange={(e) => setTamano(e.target.value)} /> A4 (0.20)</label>
-                    <label><input type="radio" name="tamano" value="0.80" checked={tamano === '0.80'} onChange={(e) => setTamano(e.target.value)} /> A3 (0.80)</label>
-                    <label><input type="radio" name="tamano" value="2.50" checked={tamano === '2.50'} onChange={(e) => setTamano(e.target.value)} /> A2 (2.50)</label>
-                    <label><input type="radio" name="tamano" value="3.00" checked={tamano === '3.00'} onChange={(e) => setTamano(e.target.value)} /> A1 (3.00)</label>
+                    <div className="step-group">
+                        <label className="step-title">3. Calidad de Impresión</label>
+                        <div className="options-grid">
+                            <div className={`option-box ${color === '1' ? 'selected' : ''}`} onClick={() => setColor('1')}>Blanco y Negro</div>
+                            <div className={`option-box ${color === '1.5' ? 'selected' : ''}`} onClick={() => setColor('1.5')}>A Color (Óptima)</div>
+                        </div>
+                    </div>
+
+                    <div className="step-group">
+                        <label className="step-title">4. Formato de Impresión</label>
+                        <div className="options-grid">
+                            <div 
+                                className={`option-box ${disableImpresion ? 'disabled' : ''} ${impresion === '1' ? 'selected' : ''}`} 
+                                onClick={() => !disableImpresion && setImpresion('1')}
+                            >
+                                Una Cara
+                            </div>
+                            <div 
+                                className={`option-box ${disableImpresion ? 'disabled' : ''} ${impresion === '0.50' ? 'selected' : ''}`} 
+                                onClick={() => !disableImpresion && setImpresion('0.50')}
+                            >
+                                Dúplex (Doble Cara)
+                            </div>
+                            <div 
+                                className={`option-box ${disableImpresion ? 'disabled' : ''} ${impresion === '0.25' ? 'selected' : ''}`} 
+                                onClick={() => !disableImpresion && setImpresion('0.25')}
+                            >
+                                Folleto (Revista)
+                            </div>
+                        </div>
+                        {disableImpresion && <span className="helper-text">El formato doble cara/folleto no está disponible para este tamaño.</span>}
+                    </div>
+
+                    <div className="step-group">
+                        <label className="step-title">5. Reducción (Páginas por hoja)</label>
+                        <div className="options-grid">
+                            <div className={`option-box ${disableReduccion ? 'disabled' : ''} ${reduccion === '1' ? 'selected' : ''}`} onClick={() => !disableReduccion && setReduccion('1')}>Sin Reducción</div>
+                            <div className={`option-box ${disableReduccion ? 'disabled' : ''} ${reduccion === '0.30' ? 'selected' : ''}`} onClick={() => !disableReduccion && setReduccion('0.30')}>2 en 1</div>
+                            <div className={`option-box ${disableReduccion ? 'disabled' : ''} ${reduccion === '0.35' ? 'selected' : ''}`} onClick={() => !disableReduccion && setReduccion('0.35')}>4 en 1</div>
+                            <div className={`option-box ${disableReduccion ? 'disabled' : ''} ${reduccion === '0.40' ? 'selected' : ''}`} onClick={() => !disableReduccion && setReduccion('0.40')}>8 en 1</div>
+                            <div className={`option-box ${disableReduccion ? 'disabled' : ''} ${reduccion === '0.45' ? 'selected' : ''}`} onClick={() => !disableReduccion && setReduccion('0.45')}>16 en 1</div>
+                        </div>
+                        {disableReduccion && <span className="helper-text">La reducción no está disponible con las opciones actuales.</span>}
+                    </div>
                 </div>
-            </div>
 
-            {/* Color */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Color:</label>
-                <div style={radioGroupStyle}>
-                    <label><input type="radio" name="color" value="1" checked={color === '1'} onChange={(e) => setColor(e.target.value)} /> B/N</label>
-                    <label><input type="radio" name="color" value="1.5" checked={color === '1.5'} onChange={(e) => setColor(e.target.value)} /> Colores</label>
+                {/* COLUMNA DERECHA: Tarjeta de Total */}
+                <div className="total-card">
+                    <h3 className="total-title">Total Neto a Pagar</h3>
+                    <p className="total-price">S/ {precio ? Number(precio).toFixed(2) : "0.00"}</p>
+                    
+                    <button 
+                        className="btn-calcular" 
+                        onClick={handleCalcular}
+                        disabled={loading}
+                    >
+                        {loading ? 'Calculando...' : '⚙️ Calcular Presupuesto'}
+                    </button>
+
+                    <hr style={{margin: '25px 0', borderColor: '#e5e7eb', borderStyle: 'solid', borderWidth: '1px 0 0 0'}} />
+                    
+                    <p style={{fontSize: '0.9rem', color: '#6b7280', marginBottom: '15px'}}>
+                        ¡Toma una captura de esta pantalla y envíala por WhatsApp para agilizar tu pedido!
+                    </p>
+                    
+                    <a 
+                        href={`https://wa.me/51999999999?text=Hola, he cotizado mi documento en su web y el total es de S/ ${precio ? Number(precio).toFixed(2) : "0.00"}.`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={`btn-whatsapp ${!precio ? 'disabled-link' : ''}`}
+                    >
+                        💬 Enviar por WhatsApp
+                    </a>
                 </div>
-            </div>
-
-            {/* Impresión */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Impresión:</label>
-                <div style={radioGroupStyle}>
-                    <label>
-                        <input type="radio" name="impresion" value="1" checked={impresion === '1'} onChange={(e) => setImpresion(e.target.value)} disabled={disableImpresion} /> 
-                        Una cara
-                    </label>
-                    <label>
-                        <input type="radio" name="impresion" value="0.50" checked={impresion === '0.50'} onChange={(e) => setImpresion(e.target.value)} disabled={disableImpresion} /> 
-                        Dúplex (0.50)
-                    </label>
-                    <label>
-                        <input type="radio" name="impresion" value="0.25" checked={impresion === '0.25'} onChange={(e) => setImpresion(e.target.value)} disabled={disableImpresion} /> 
-                        Folleto (0.25)
-                    </label>
-                </div>
-            </div>
-
-            {/* Reducción */}
-            <div style={sectionStyle}>
-                <label style={labelStyle}>Reducción (Páginas por hoja):</label>
-                <div style={radioGroupStyle}>
-                    <label>
-                        <input type="radio" name="reduccion" value="1" checked={reduccion === '1'} onChange={(e) => setReduccion(e.target.value)} disabled={disableReduccion} /> 
-                        Sin reducción (1)
-                    </label>
-                    <label>
-                        <input type="radio" name="reduccion" value="0.30" checked={reduccion === '0.30'} onChange={(e) => setReduccion(e.target.value)} disabled={disableReduccion} /> 
-                        2 en 1 (0.30)
-                    </label>
-                    <label>
-                        <input type="radio" name="reduccion" value="0.35" checked={reduccion === '0.35'} onChange={(e) => setReduccion(e.target.value)} disabled={disableReduccion} /> 
-                        4 en 1 (0.35)
-                    </label>
-                    <label>
-                        <input type="radio" name="reduccion" value="0.40" checked={reduccion === '0.40'} onChange={(e) => setReduccion(e.target.value)} disabled={disableReduccion} /> 
-                        8 en 1 (0.40)
-                    </label>
-                    <label>
-                        <input type="radio" name="reduccion" value="0.45" checked={reduccion === '0.45'} onChange={(e) => setReduccion(e.target.value)} disabled={disableReduccion} /> 
-                        16 en 1 (0.45)
-                    </label>
-                </div>
-            </div>
-
-            <button 
-                onClick={handleCalcular} 
-                disabled={loading}
-                style={{ width: '100%', padding: '15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', fontSize: '1.1rem', cursor: loading ? 'wait' : 'pointer' }}
-            >
-                {loading ? 'Procesando PDF...' : 'Calcular Precio'}
-            </button>
-
-            {/* Resultado Final */}
-            <div style={{ marginTop: '20px' }}>
-                <label style={labelStyle}>Precio Total Estimado:</label>
-                <input 
-                    type="text" 
-                    value={precio ? `S/ ${precio}` : ''} 
-                    readOnly 
-                    style={{ ...inputStyle, fontSize: '1.5rem', fontWeight: 'bold', color: '#28a745', textAlign: 'center' }} 
-                />
             </div>
         </div>
     );

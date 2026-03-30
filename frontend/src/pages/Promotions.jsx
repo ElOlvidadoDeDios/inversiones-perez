@@ -16,7 +16,7 @@ const Promotions = () => {
     useEffect(() => {
         const fetchPromotions = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/promotions');
+                const response = await axios.get('http://localhost:4000/api/promotions');
                 setPromotions(response.data);
             } catch (error) {
                 console.error(error);
@@ -40,7 +40,7 @@ const Promotions = () => {
         }
     
         try {
-            await axios.post('http://localhost:5000/api/subscribe', { email }, {
+            await axios.post('http://localhost:4000/api/subscribe', { email }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

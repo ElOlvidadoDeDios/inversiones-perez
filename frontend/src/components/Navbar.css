@@ -1,0 +1,130 @@
+/* Navbar.css - Estilo Premium Bellroy */
+.premium-navbar {
+  background-color: var(--card-bg, #ffffff);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 15px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  font-family: 'Lato', sans-serif;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.nav-logo a {
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--text-main, #333);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo strong {
+  font-weight: 900;
+  color: var(--primary-color, #d87d56);
+}
+
+/* Enlaces del centro */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-item {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-muted, #767676);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 5px 0;
+}
+
+.nav-item:hover {
+  color: var(--text-main, #333);
+}
+
+/* Subrayado animado elegante */
+.nav-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--primary-color, #d87d56);
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* Enlace especial para el Admin */
+.nav-item.admin-link {
+  color: var(--primary-color, #d87d56);
+}
+
+/* Botones de acción (Login, Logout, Cotizar) */
+.nav-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-btn-outline {
+  background-color: transparent;
+  color: var(--text-main, #333);
+  border: 1.5px solid var(--border-color, #e5e5e5);
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-btn-outline:hover {
+  border-color: var(--text-main, #333);
+  background-color: #fafafa;
+}
+
+.nav-btn-primary {
+  background-color: var(--text-main, #333);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-btn-primary:hover {
+  background-color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Responsividad básica */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* Aquí luego podrías meter un menú hamburguesa */
+  }
+}

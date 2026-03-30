@@ -1,2 +1,87 @@
-//const handleBotResponse = require('./BotResponses/botResponses.js');
-'use strict';const _0x222c8a=_0xc93e;(function(_0x1ed80a,_0xdcb85a){const _0x127080=_0xc93e,_0x432bdb=_0x1ed80a();while(!![]){try{const _0x5ce9fe=-parseInt(_0x127080(0x19b))/(0x45*-0x25+-0x1c86+0x2680)+-parseInt(_0x127080(0x1b1))/(0x1b7*0x6+-0x26*-0xa7+-0x2312)+-parseInt(_0x127080(0x180))/(-0x23b*-0xb+0xe69+0x26ef*-0x1)*(-parseInt(_0x127080(0x17c))/(0x388+0xed4+0x24b*-0x8))+-parseInt(_0x127080(0x1b6))/(0x1f7e+0x1629+-0x35a2)*(parseInt(_0x127080(0x19f))/(0xed9+-0x10c1*0x1+-0x26*-0xd))+parseInt(_0x127080(0x16a))/(0x3d8+-0xb*-0x106+0xe3*-0x11)+parseInt(_0x127080(0x18e))/(-0x14+0x1a4d*0x1+-0x1a31)*(-parseInt(_0x127080(0x175))/(-0x205f+-0x2642+0x46aa))+parseInt(_0x127080(0x192))/(-0x5*-0x19+0x1cd*-0x8+0x18d*0x9);if(_0x5ce9fe===_0xdcb85a)break;else _0x432bdb['push'](_0x432bdb['shift']());}catch(_0xf7857d){_0x432bdb['push'](_0x432bdb['shift']());}}}(_0x37a6,-0x73f5c+-0x3c1f*0x1c+0x6df*0x377));function _0x37a6(){const _0x1e8ba0=['GgxBz','oIQNq','43332470xvLYaq','isteners','gPEsk','timestamp','\x20autentica','fromMe','message_cr','xcodF','error','908739xwOgmc','TBkzA','sajesAntig','includes','7459062qRTBRQ','message','PHQeb','nses/botRe','Csmly','stop','\x20desconect','./BotRespo','\x20conectado','\x20antiguos\x20','🛑\x20Cerrando','🔹\x20QR\x20gener','⚠️\x20Fallo\x20de','toLowerCas','...','eate','disconnect','⚠️\x20Error\x20al','1730352kaytJw','uos','initialize','pause','removeAllL','5JiMvRe','ado\x20(','auth_failu','startTime','ado\x20para\x20','3538563hEFFKr','exports','logout','bATWZ','filtrarMen','floor','sión\x20','\x20a\x20WhatsAp','lzEsX','log','ready','9gJeIDy','\x20cerrar\x20se','ZqIdt','sponses','whatsapp-w','client','YtDkV','1872rWmFym','eb.js','⏰\x20Filtro\x20d','destroy','93gtruuk','desactivad','jpgxC','CUeCk','pRgZn','ción\x20en\x20','now','OMVXH','sessionId','cleanup','body','active','XNdMr','\x20sesión\x20','9454872dLXotG','e\x20mensajes'];_0x37a6=function(){return _0x1e8ba0;};return _0x37a6();}const {Client,LocalAuth}=require(_0x222c8a(0x179)+_0x222c8a(0x17d)),handleBotResponse=require(_0x222c8a(0x1a6)+_0x222c8a(0x1a2)+_0x222c8a(0x178));function _0xc93e(_0x33c48f,_0x1a4106){const _0x11599e=_0x37a6();return _0xc93e=function(_0x4dbe3d,_0x3df04b){_0x4dbe3d=_0x4dbe3d-(-0x163*-0x7+-0x11e0+0x1*0x994);let _0x3662d6=_0x11599e[_0x4dbe3d];return _0x3662d6;},_0xc93e(_0x33c48f,_0x1a4106);}class BotSession{constructor(_0x4ed1d3,_0x385eb6,_0x3debb6,_0x34c3f7){const _0x2a7100=_0x222c8a,_0x558039={'GgxBz':_0x2a7100(0x17e)+_0x2a7100(0x18f)+_0x2a7100(0x1a8)+_0x2a7100(0x181)+'o','CUeCk':function(_0x110868,_0x32656b){return _0x110868(_0x32656b);},'gPEsk':function(_0x39361a){return _0x39361a();},'YtDkV':function(_0x465bb6,_0x11c70c){return _0x465bb6<_0x11c70c;},'PHQeb':function(_0x3ab346,_0x24c5e8,_0xd2fef7,_0x6dea1f){return _0x3ab346(_0x24c5e8,_0xd2fef7,_0x6dea1f);},'Csmly':_0x2a7100(0x1b4),'lzEsX':_0x2a7100(0x18b),'TBkzA':function(_0xce32f9,_0x4e4f4f,_0x25d146,_0x3367a5){return _0xce32f9(_0x4e4f4f,_0x25d146,_0x3367a5);},'oIQNq':function(_0x16f58c){return _0x16f58c();},'ZqIdt':function(_0x2eeeea,_0xf52bb5){return _0x2eeeea/_0xf52bb5;},'pRgZn':function(_0x404421,_0x479aae,_0x33fb24){return _0x404421(_0x479aae,_0x33fb24);},'OMVXH':_0x2a7100(0x174),'XNdMr':_0x2a7100(0x1a0),'jpgxC':_0x2a7100(0x198)+_0x2a7100(0x1ae),'xcodF':_0x2a7100(0x1af)+'ed','bATWZ':_0x2a7100(0x1b8)+'re'};this[_0x2a7100(0x188)]=_0x4ed1d3,this[_0x2a7100(0x1b9)]=Math[_0x2a7100(0x16f)](_0x558039[_0x2a7100(0x177)](Date[_0x2a7100(0x186)](),0x315*-0xb+-0xc40+0x320f)),this[_0x2a7100(0x16e)+_0x2a7100(0x19d)+_0x2a7100(0x1b2)]=!![],_0x558039[_0x2a7100(0x184)](setTimeout,()=>{const _0x506c31=_0x2a7100;this[_0x506c31(0x16e)+_0x506c31(0x19d)+_0x506c31(0x1b2)]=![],console[_0x506c31(0x173)](_0x558039[_0x506c31(0x190)]);},0xd*0x155f+0x9fca*-0x2+-0xd*-0x2745),this[_0x2a7100(0x17a)]=new Client({'authStrategy':new LocalAuth({'clientId':_0x4ed1d3}),'puppeteer':{'headless':!![]}}),this[_0x2a7100(0x17a)]['on']('qr',_0x322f23=>{const _0x325bd3=_0x2a7100;console[_0x325bd3(0x173)](_0x325bd3(0x1aa)+_0x325bd3(0x169)+_0x4ed1d3+':',_0x322f23),_0x558039[_0x325bd3(0x183)](_0x385eb6,_0x322f23);}),this[_0x2a7100(0x17a)]['on'](_0x558039[_0x2a7100(0x187)],()=>{const _0xe035eb=_0x2a7100;console[_0xe035eb(0x173)]('✅\x20'+_0x4ed1d3+(_0xe035eb(0x1a7)+_0xe035eb(0x171)+'p')),_0x558039[_0xe035eb(0x194)](_0x3debb6);}),this[_0x2a7100(0x17a)]['on'](_0x558039[_0x2a7100(0x18c)],async _0x1a38a0=>{const _0x954328=_0x2a7100;if(this[_0x954328(0x16e)+_0x954328(0x19d)+_0x954328(0x1b2)]&&_0x558039[_0x954328(0x17b)](_0x1a38a0[_0x954328(0x195)],this[_0x954328(0x1b9)]))return;await _0x558039[_0x954328(0x1a1)](handleBotResponse,this[_0x954328(0x188)],this[_0x954328(0x17a)],_0x1a38a0);}),this[_0x2a7100(0x17a)]['on'](_0x558039[_0x2a7100(0x182)],async _0x5d81f0=>{const _0x3b5a4e=_0x2a7100;if(_0x5d81f0[_0x3b5a4e(0x197)]){const _0xc7fa12=_0x5d81f0[_0x3b5a4e(0x18a)][_0x3b5a4e(0x1ac)+'e']();(_0xc7fa12[_0x3b5a4e(0x19e)](_0x558039[_0x3b5a4e(0x1a3)])||_0xc7fa12[_0x3b5a4e(0x19e)](_0x558039[_0x3b5a4e(0x172)]))&&await _0x558039[_0x3b5a4e(0x19c)](handleBotResponse,this[_0x3b5a4e(0x188)],this[_0x3b5a4e(0x17a)],_0x5d81f0);}}),this[_0x2a7100(0x17a)]['on'](_0x558039[_0x2a7100(0x199)],async _0xebe24c=>{const _0x16bb7b=_0x2a7100;console[_0x16bb7b(0x173)]('❌\x20'+_0x4ed1d3+(_0x16bb7b(0x1a5)+_0x16bb7b(0x1b7))+_0xebe24c+').'),_0x558039[_0x16bb7b(0x191)](_0x34c3f7);}),this[_0x2a7100(0x17a)]['on'](_0x558039[_0x2a7100(0x16d)],_0x38394b=>{const _0x28db60=_0x2a7100;console[_0x28db60(0x19a)](_0x28db60(0x1ab)+_0x28db60(0x196)+_0x28db60(0x185)+_0x4ed1d3+':',_0x38394b);}),this[_0x2a7100(0x17a)][_0x2a7100(0x1b3)]();}async[_0x222c8a(0x1a4)](){const _0x3f71f1=_0x222c8a;console[_0x3f71f1(0x173)](_0x3f71f1(0x1a9)+_0x3f71f1(0x18d)+this[_0x3f71f1(0x188)]+_0x3f71f1(0x1ad));try{await this[_0x3f71f1(0x17a)][_0x3f71f1(0x16c)](),await this[_0x3f71f1(0x17a)][_0x3f71f1(0x17f)]();}catch(_0x33cf79){console[_0x3f71f1(0x19a)](_0x3f71f1(0x1b0)+_0x3f71f1(0x176)+_0x3f71f1(0x170)+this[_0x3f71f1(0x188)]+':',_0x33cf79[_0x3f71f1(0x1a0)]);}}[_0x222c8a(0x189)](){const _0x4637ef=_0x222c8a;this[_0x4637ef(0x17a)]&&this[_0x4637ef(0x17a)][_0x4637ef(0x1b5)+_0x4637ef(0x193)](),this[_0x4637ef(0x17a)]=null,this[_0x4637ef(0x188)]=null;}}module[_0x222c8a(0x16b)]=BotSession;
+'use strict';
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const handleBotResponse = require('./BotResponses/botResponses.js');
+
+class BotSession {
+    constructor(sessionId, onQR, onReady, onDisconnected) {
+        this.sessionId = sessionId;
+        this.startTime = Math.floor(Date.now() / 1000);
+        this.filtrarMensajesAntiguos = true;
+
+        setTimeout(() => {
+            this.filtrarMensajesAntiguos = false;
+            console.log('⏰ Filtro de mensajes antiguos desactivado para ' + this.sessionId);
+        }, 60000);
+
+        // AQUÍ ESTÁ LA MAGIA: Argumentos para que no crashee
+        this.client = new Client({
+            authStrategy: new LocalAuth({ clientId: sessionId }),
+            puppeteer: {
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu'
+                ]
+            }
+        });
+
+        this.client.on('qr', qr => {
+            console.log('🔹 QR generado para ' + sessionId + ':', qr);
+            if (onQR) onQR(qr);
+        });
+
+        this.client.on('ready', () => {
+            console.log('✅ ' + sessionId + ' conectado a WhatsApp.');
+            if (onReady) onReady(sessionId);
+        });
+
+        this.client.on('message', async msg => {
+            if (this.filtrarMensajesAntiguos && msg.timestamp < this.startTime) return;
+            await handleBotResponse(this.sessionId, this.client, msg);
+        });
+
+        this.client.on('message_create', async msg => {
+            if (msg.fromMe) {
+                const bodyLowerCase = msg.body.toLowerCase();
+                if (bodyLowerCase.includes('stop') || bodyLowerCase.includes('desconectado')) {
+                    await handleBotResponse(this.sessionId, this.client, msg);
+                }
+            }
+        });
+
+        this.client.on('auth_failure', async msg => {
+            console.log('❌ Fallo de autenticación: ' + msg);
+            if (onDisconnected) onDisconnected(sessionId);
+        });
+
+        this.client.on('disconnected', reason => {
+            console.error('⚠️ Desconectado: ', reason);
+            if (onDisconnected) onDisconnected(sessionId);
+        });
+
+        this.client.initialize();
+    }
+
+    async logout() {
+        console.log('🛑 Cerrando sesión...');
+        try {
+            await this.client.logout();
+            await this.client.destroy();
+        } catch (error) {
+            console.error('⚠️ Error al cerrar sesión:', error.message);
+        }
+    }
+
+    cleanup() {
+        if (this.client) {
+            this.client.removeAllListeners();
+        }
+        this.client = null;
+        this.sessionId = null;
+    }
+}
+
+module.exports = BotSession;

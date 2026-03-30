@@ -9,19 +9,26 @@ const fs = require('fs');             // Añadido para el Bot
 const path = require('path');         // Añadido para el Bot
 
 dotenv.config();
+
 // Controladores de Inversiones Pérez
 const db = require('./db');
 const productController = require('./controllers/productController');
 const promotionController = require('./controllers/promotionController');
-const authController = require('./controllers/authController');
-const { verifyPermissions, verifyAdmin } = require('./controllers/authController');
-const { sendPromotionEmail } = require('./services/mailer');
 const costeadorController = require('./controllers/costeadorController');
+
+// Importamos TODO desde authController de forma limpia
+const { 
+    register, 
+    login, 
+    getUser, 
+    changePassword, 
+    verifyAdmin, 
+    verifyPermissions 
+} = require('./controllers/authController'); 
+const { sendPromotionEmail } = require('./services/mailer');
 
 // Clase de Sesión del Bot
 const BotSession = require('./botSession');
-
-
 
 const app = express();
 const server = http.createServer(app); // Envolvemos Express en un servidor HTTP
@@ -41,10 +48,10 @@ db.connect((err) => {
 // ==========================================
 // RUTAS DE INVERSIONES PÉREZ (API)
 // ==========================================
-app.get('/api/user', authController.getUser);
-app.put('/api/users/:id/change-password', authController.changePassword);
-app.post('/api/register', authController.register);
-app.post('/api/login', authController.login);
+app.get('/api/user', getUser);
+app.put('/api/users/:id/change-password', changePassword);
+app.post('/api/register', register);
+app.post('/api/login', login);
 
 app.post('/api/products', verifyPermissions('can_manage_products'), upload.single('image'), productController.createProduct);
 app.get('/api/products', productController.getProducts);
@@ -64,6 +71,7 @@ app.get('/api/users', verifyAdmin, async (req, res) => {
         res.status(500).json({ message: 'Error al obtener usuarios' });
     }
 });
+
 app.put('/api/users/:id/update-permissions', verifyAdmin, async (req, res) => {
     const { id } = req.params;
     const { can_delete_users, can_manage_promotions, can_manage_products } = req.body;
