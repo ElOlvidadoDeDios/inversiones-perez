@@ -58,7 +58,7 @@ const Costeador = () => {
         formData.append('reduccion', reduccion);
 
         try {
-            const response = await api.post('http://localhost:4000/calcular-precio', formData, {
+            const response = await api.post('http://localhost:4000/api/calcular-precio', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setNumHojas(response.data.numPaginas);
@@ -83,7 +83,7 @@ const Costeador = () => {
         formData.append('reduccion', reduccion);
 
         try {
-            const response = await api.post('http://localhost:4000/calcular-precio', formData, {
+            const response = await api.post('http://localhost:4000/api/calcular-precio', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             
