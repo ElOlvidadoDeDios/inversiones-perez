@@ -66,12 +66,21 @@ class BotSession {
     }
 
     async logout() {
-        console.log('🛑 Cerrando sesión...');
+        console.log('🛑 Deteniendo cliente de WhatsApp...');
         try {
-            await this.client.logout();
-            await this.client.destroy();
+            // Intentamos cerrar sesión de forma segura si ya estaba escaneado
+            await this.client.logout().catch(() => {});
         } catch (error) {
-            console.error('⚠️ Error al cerrar sesión:', error.message);
+            console.error('⚠️ Aviso al cerrar sesión:', error.message);
+        } finally {
+            // EL SECRETO: SIEMPRE destruimos el cliente (mata el proceso Chromium), 
+            // haya iniciado sesión o solo estuviera generando el QR.
+            try {
+                await this.client.destroy();
+                console.log('✅ Cliente destruido correctamente.');
+            } catch (e) {
+                console.error('⚠️ Error al destruir cliente:', e.message);
+            }
         }
     }
 

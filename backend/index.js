@@ -15,6 +15,7 @@ const db = require('./db');
 const productController = require('./controllers/productController');
 const promotionController = require('./controllers/promotionController');
 const costeadorController = require('./controllers/costeadorController');
+const postController = require('./controllers/postController');
 
 // Importamos TODO desde authController de forma limpia
 const { 
@@ -62,6 +63,11 @@ app.post('/api/promotions', verifyPermissions('can_manage_promotions'), upload.s
 app.get('/api/promotions', promotionController.getPromotions);
 app.put('/api/promotions/:id', verifyPermissions('can_manage_promotions'), upload.single('image'), promotionController.updatePromotion);
 app.delete('/api/promotions/:id', verifyPermissions('can_manage_promotions'), promotionController.deletePromotion);
+
+// --- RUTAS DE POSTS (GALERÍA DE INICIO) ---
+app.post('/api/posts', verifyAdmin, upload.single('image'), postController.createPost);
+app.get('/api/posts', postController.getPosts);
+app.delete('/api/posts/:id', verifyAdmin, postController.deletePost);
 
 app.get('/api/users', verifyAdmin, async (req, res) => {
     try {

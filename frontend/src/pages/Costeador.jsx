@@ -5,30 +5,35 @@ import Notification from '../components/Notification';
 import './styles/Costeador.css';
 
 const Costeador = () => {
-    // Estados del formulario (Mantenidos intactos)
+    // Estados del formulario
     const [file, setFile] = useState(null);
     const [numHojas, setNumHojas] = useState('');
-    const [precio, setPrecio] = useState('');
+    const [precio, setPrecio] = useState(''); // Precio base (solo impresión)
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ message: '', type: '' });
 
-    // Estados con los valores exactos (Mantenidos intactos)
+    // Estados con los valores exactos
     const [tamano, setTamano] = useState('0.20'); 
     const [color, setColor] = useState('1');      
     const [impresion, setImpresion] = useState('1'); 
     const [reduccion, setReduccion] = useState('1'); 
 
-    // Estados de UI (Mantenidos intactos)
+    // --- NUEVOS ESTADOS PARA ANILLADO ---
+    const [wantsBinding, setWantsBinding] = useState(false);
+    const [coverColor, setCoverColor] = useState('Transparente (Adelante) / Negro (Atrás)');
+
+    // Estados de UI
     const [disableReduccion, setDisableReduccion] = useState(false);
     const [disableImpresion, setDisableImpresion] = useState(false);
 
-    // Efecto para manejar las reglas de negocio (Mantenido intacto)
+    // Efecto para manejar las reglas de negocio
     useEffect(() => {
-        if (['0.80', '2.50', '3.00'].includes(tamano)) {
+        if (['0.80', '2.50', '3.00'].includes(tamano)) { // A3, A2, A1
             setDisableReduccion(true);
             setReduccion('1');
             setDisableImpresion(true);
             setImpresion('1');
+            setWantsBinding(false); // Desactiva el anillado si cambian a un tamaño no válido
         } else {
             setDisableReduccion(false);
             setDisableImpresion(false);
@@ -41,6 +46,50 @@ const Costeador = () => {
             setDisableReduccion(false);
         }
     }, [tamano, impresion]);
+
+    // --- LÓGICA EXPERTA DE ANILLADO ---
+    const calculatePhysicalSheets = () => {
+        const pages = parseInt(numHojas);
+        if (isNaN(pages) || pages <= 0) return 0;
+
+        let physicalSheets = pages;
+
+        // 1. Calcular según modo de impresión
+        if (impresion === '0.50') { // Dúplex
+            physicalSheets = Math.ceil(pages / 2);
+        } else if (impresion === '0.25') { // Folleto
+            physicalSheets = Math.ceil(pages / 4);
+        }
+
+        // 2. Calcular reducciones
+        let factorReduccion = 1;
+        if (reduccion === '0.30') factorReduccion = 2; // 2 en 1
+        else if (reduccion === '0.35') factorReduccion = 4; // 4 en 1
+        else if (reduccion === '0.40') factorReduccion = 8; // 8 en 1
+        else if (reduccion === '0.45') factorReduccion = 16; // 16 en 1
+
+        if (factorReduccion > 1) {
+            physicalSheets = Math.ceil(physicalSheets / factorReduccion);
+        }
+
+        return physicalSheets;
+    };
+
+    const calculateBindingCost = () => {
+        const invalidSizes = ['0.80', '2.50', '3.00']; // Valores de A3, A2, A1
+        if (!wantsBinding || invalidSizes.includes(tamano)) return 0;
+
+        const sheets = calculatePhysicalSheets();
+        if (sheets === 0) return 0;
+
+        const baseCost = 1.50;
+        const extraTiers = Math.floor((sheets - 1) / 20); 
+        return baseCost + (extraTiers * 0.50);
+    };
+
+    // Calcula el precio final (Impresión Backend + Costo de Anillado Local)
+    const finalPrice = (parseFloat(precio || 0) + calculateBindingCost()).toFixed(2);
+    // ----------------------------------
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
@@ -98,12 +147,15 @@ const Costeador = () => {
         }
     };
 
+    // Preparamos el mensaje de WhatsApp para que incluya los detalles del anillado
+    const whatsappMessage = `Hola, he cotizado mi documento en su web y el total es de S/ ${finalPrice}.${wantsBinding ? ` (Incluye Anillado con tapas: ${coverColor}).` : ''}`;
+
     return (
         <div className="costeador-wrapper">
             <Notification message={notification.message} type={notification.type} />
             
             <div className="costeador-container">
-                {/* COLUMNA IZQUIERDA: Formulario con animación */}
+                {/* COLUMNA IZQUIERDA: Formulario */}
                 <motion.div 
                     className="form-card"
                     initial={{ opacity: 0, y: 20 }}
@@ -190,9 +242,63 @@ const Costeador = () => {
                         </div>
                         {disableReduccion && <span className="helper-text">⚠️ La reducción no está disponible con las opciones actuales.</span>}
                     </div>
+
+                    {/* --- NUEVA SECCIÓN DE ANILLADO --- */}
+                    <div className="step-group" style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                        <label className="step-title" style={{ marginBottom: '15px' }}>6. Acabados y Encuadernación</label>
+                        
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: '600', color: '#0f172a' }}>
+                            <input 
+                                type="checkbox" 
+                                checked={wantsBinding}
+                                disabled={['0.80', '2.50', '3.00'].includes(tamano)} // Deshabilita para A3, A2, A1
+                                onChange={(e) => setWantsBinding(e.target.checked)}
+                                style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#3b82f6' }}
+                            />
+                            Agregar Anillado Espiral
+                        </label>
+
+                        {/* Mensaje si el tamaño no lo permite */}
+                        {['0.80', '2.50', '3.00'].includes(tamano) && (
+                            <p style={{ fontSize: '0.85rem', color: '#ef4444', margin: '5px 0 0 28px' }}>
+                                * El anillado no está disponible para tamaños grandes (A3, A2, A1).
+                            </p>
+                        )}
+
+                        {/* Opciones que se despliegan si activa el anillado */}
+                        {wantsBinding && !['0.80', '2.50', '3.00'].includes(tamano) && (
+                            <div style={{ marginTop: '15px', marginLeft: '28px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                    <label style={{ fontSize: '0.9rem', color: '#64748b' }}>Color de Tapas (Mica):</label>
+                                    <select 
+                                        value={coverColor}
+                                        onChange={(e) => setCoverColor(e.target.value)}
+                                        style={{ padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: '#fff', fontSize: '0.95rem', color: '#0f172a', outline: 'none' }}
+                                    >
+                                        <option value="Transparente (Adelante) / Negro (Atrás)">Clásico: Transparente y Negro</option>
+                                        <option value="Transparente (Ambos lados)">Transparente en ambos lados</option>
+                                        <option value="Azul (Ambos lados)">Micas Azules</option>
+                                        <option value="Rojo (Ambos lados)">Micas Rojas</option>
+                                        <option value="Verde (Ambos lados)">Micas Verdes</option>
+                                    </select>
+                                </div>
+
+                                {/* Resumen del cobro para transparencia con el cliente */}
+                                {calculatePhysicalSheets() > 0 && (
+                                    <div style={{ backgroundColor: '#e0f2fe', padding: '12px', borderRadius: '6px', fontSize: '0.85rem', color: '#0369a1', lineHeight: '1.4' }}>
+                                        <strong>Resumen de Anillado:</strong> Se han calculado <strong>{calculatePhysicalSheets()} hojas físicas</strong> en base a tu configuración. 
+                                        El costo adicional del anillo será de <strong>S/ {calculateBindingCost().toFixed(2)}</strong>.
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    {/* ---------------------------------- */}
+
                 </motion.div>
 
-                {/* COLUMNA DERECHA: Tarjeta de Total con animación */}
+                {/* COLUMNA DERECHA: Tarjeta de Total */}
                 <motion.div 
                     className="total-card"
                     initial={{ opacity: 0, x: 20 }}
@@ -201,7 +307,8 @@ const Costeador = () => {
                 >
                     <div className="total-header">
                         <h3 className="total-title">Total a Pagar</h3>
-                        <p className="total-price">S/ {precio ? Number(precio).toFixed(2) : "0.00"}</p>
+                        {/* Se muestra el precio sumando la impresión + anillado */}
+                        <p className="total-price">S/ {precio ? finalPrice : "0.00"}</p>
                     </div>
                     
                     <button 
@@ -220,7 +327,7 @@ const Costeador = () => {
                         </p>
                         
                         <a 
-                            href={`https://wa.me/51999999999?text=Hola, he cotizado mi documento en su web y el total es de S/ ${precio ? Number(precio).toFixed(2) : "0.00"}.`} 
+                            href={`https://wa.me/51999999999?text=${encodeURIComponent(whatsappMessage)}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className={`btn-whatsapp ${!precio ? 'disabled-link' : ''}`}

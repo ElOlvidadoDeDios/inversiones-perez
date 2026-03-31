@@ -41,6 +41,16 @@ const BotManager = () => {
         ws.current.send(JSON.stringify({ action: 'start', sessionId: sessionName }));
     };
 
+    // NUEVA FUNCIÓN: Cancelar la generación del QR
+    const handleCancelBot = () => {
+        setLoading(false);
+        setQrCode('');
+        // Enviamos la orden de detener al backend usando el mismo nombre de sesión
+        if (ws.current && ws.current.readyState === 1) { // 1 = OPEN
+            ws.current.send(JSON.stringify({ action: 'stop', sessionId: sessionName }));
+        }
+    };
+
     const handleStopBot = (id) => {
         if(window.confirm(`¿Seguro que deseas desconectar el bot de ${id}?`)) {
             ws.current.send(JSON.stringify({ action: 'stop', sessionId: id }));
@@ -52,21 +62,35 @@ const BotManager = () => {
             <h2>🤖 Gestor del Bot de WhatsApp</h2>
             <p>Escanea el QR con el celular de la empresa para activar las respuestas automáticas.</p>
 
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
                 <input 
                     type="text" 
                     value={sessionName} 
                     onChange={(e) => setSessionName(e.target.value)} 
                     placeholder="Nombre de sesión (ej. Imprenta)"
-                    style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    disabled={loading || qrCode} // Deshabilita el input si está cargando o mostrando QR
+                    style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', minWidth: '250px' }}
                 />
-                <button 
-                    onClick={handleStartBot}
-                    disabled={loading}
-                    style={{ padding: '10px 20px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '4px', cursor: loading ? 'wait' : 'pointer', fontWeight: 'bold' }}
-                >
-                    {loading ? 'Generando QR...' : 'Generar QR de Conexión'}
-                </button>
+                
+                {/* Botón de Iniciar: Se oculta si ya se está generando o mostrando un QR */}
+                {!loading && !qrCode && (
+                    <button 
+                        onClick={handleStartBot}
+                        style={{ padding: '10px 20px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                    >
+                        Generar QR de Conexión
+                    </button>
+                )}
+
+                {/* Botón de Cancelar: Aparece mientras carga o mientras se muestra el QR */}
+                {(loading || qrCode) && (
+                    <button 
+                        onClick={handleCancelBot}
+                        style={{ padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                    >
+                        {loading ? 'Detener Generación...' : 'Cancelar Conexión QR'}
+                    </button>
+                )}
             </div>
 
             {/* Mostrar QR si existe */}
